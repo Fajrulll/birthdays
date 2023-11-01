@@ -76,12 +76,12 @@ def register():
         repeat_password = request.form.get("repeat password")
 
         hash = generate_password_hash(password)
-        hashh= generate_password_hash(repeat_password)
+        # hashh= generate_password_hash(repeat_password)
 
         if len(rows) == 1:
             return "username already taken"
         if password == repeat_password:
-            db.execute("INSERT INTO user (email, name, username, password, repeat_password) VALUES(?, ?, ?, ?, ?)", email, name, username, hash, hashh)
+            db.execute("INSERT INTO user (email, name, username, password) VALUES(?, ?, ?, ?, ?)", email, name, username, hash)
 
             registered_user = db.execute("SELECT * FROM user WHERE username = ?", username)
             session["user_id"] = registered_user[0]["id"]
@@ -91,3 +91,30 @@ def register():
             return "must provide matching password"
     else:
         return render_template("register.html")
+    
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    session.clear()
+
+    if request.method == "POST":
+        if not request.form.get("username"):
+            return "must provide username"
+        elif not request.form.get("password"):
+            return "must provide password"
+        rows = db.execute("SELECT * FROM user WHERE username = ?", request.form.get("username"))
+
+        if len(rows) != 1 or not check_password_hash(rows[0]["password"], request.form.get("password")):
+            return "invalid username and/or password"
+        
+        session["user_id"] = rows[0]["id"]
+
+        return redirect("/")
+    else:
+        return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect("/")

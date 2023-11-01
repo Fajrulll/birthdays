@@ -35,11 +35,13 @@
 <body>
     <fieldset>
         <legend>LOGIN</legend>
-        <input type="text" id="username" name="username" placeholder="Username">
-        <br><br>
-        <input type="password" id="password" name="password" placeholder="Password">
-        <br><br>
-        <input type="submit" value="Login">
+        <form action="/login" method="POST">
+          <input type="text" id="username" name="username" placeholder="Username">
+          <br><br>
+          <input type="password" id="password" name="password" placeholder="Password">
+          <br><br>
+          <input type="submit" value="Login">
+        </form>
     </fieldset>
 </body>
 </html>
